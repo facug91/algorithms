@@ -27,9 +27,7 @@ void scc (int u) {
 void make_scc_dag (int u) {
 	vis[u] = true;
 	for (int v : adj[u]) {
-		if (comp[u] != comp[v]) {
-			in[comp[v]]++;
-		}
+		if (comp[u] != comp[v]) dag[comp[u]].push_back(comp[v]);
 		if (!vis[v]) make_scc_dag(v);
 	}
 }
