@@ -1,1 +1,8 @@
-OJ-Solutions
+OJ-Solutions/
+
+Main.cpp
+MainFull.cpp
+
+.idea/
+
+cmake-build-*
