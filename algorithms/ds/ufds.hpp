@@ -19,7 +19,7 @@ public:
 
 	int findSet(int i) {
 		if (p[i] == i) return i;
-		return findSet(p[i]);
+		return p[i] = findSet(p[i]);
 	}
 
 	bool isSameSet(int i, int j) {
