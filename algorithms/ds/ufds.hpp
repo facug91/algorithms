@@ -33,10 +33,10 @@ public:
 			numDisjointSets--;
 			if (rank[x] > rank[y]) {
 				p[y] = x;
-				counter[x]++;
+				counter[x] += counter[y];
 			} else {
 				p[x] = y;
-				counter[y]++;
+				counter[y] += counter[x];
 				if (rank[x] == rank[y])
 					rank[y]++;
 			}
