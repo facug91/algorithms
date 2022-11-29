@@ -19,15 +19,18 @@ using namespace std;
 
 const double EPS = 1e-9;
 const double PI = 2.0 * acos(0.0);
-typedef long long ll;
+using ll = long long;
+using ii = pair<int, int>;
+using vi = vector<int>;
 
 const int MAX_N = 1e5 + 5;
 const int MAX_K = 16;
+const int MOD = 1e9 + 7;
 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-
+	cout.tie(nullptr);
 
 
 	return 0;
