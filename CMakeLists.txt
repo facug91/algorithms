@@ -6,7 +6,7 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp")
   configure_file(${CMAKE_SOURCE_DIR}/Main.cpp.template ${CMAKE_SOURCE_DIR}/Main.cpp COPYONLY)
 endif()
 
-set(HEADERS algorithms/ds/sparse_table.hpp algorithms/ds/ufds.hpp)
+set(HEADERS algorithms/ds/sparse_table.hpp algorithms/ds/ufds.hpp algorithms/ds/min_max_queue.hpp algorithms/ds/fenwick_tree.hpp)
 
 add_executable(cp_main Main.cpp ${HEADERS})
 

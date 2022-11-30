@@ -1,7 +1,12 @@
 
 /**
+ * Sparse table for range min/max query.
+ * Ref: Competitive Programming 3, section 9.33
+ *      https://cp-algorithms.com/data_structures/sparse-table.html
+ */
+
+/**
  * \brief Defines a class for a sparse table for range min/max query.
- *        Ref: https://cp-algorithms.com/data_structures/sparse-table.html
  *
  * \tparam ValueType Type of the elements.
  * \tparam MaxSize Maximum number of elements.
