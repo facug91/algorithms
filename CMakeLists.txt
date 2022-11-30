@@ -15,7 +15,7 @@ target_include_directories(cp_main
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/algorithms>
                            )
 
-target_compile_features(cp_main PRIVATE cxx_std_20)
+target_compile_features(cp_main PRIVATE cxx_std_17)
 target_compile_definitions(cp_main PUBLIC DEBUG=1)
 
 target_link_libraries(cp_main)
@@ -30,31 +30,18 @@ if (NOT SED_TOOL)
 endif (NOT SED_TOOL)
 
 file(READ ${CMAKE_SOURCE_DIR}/algorithms/ds/sparse_table.hpp SPARSE_TABLE_CONTENT)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include <ds\\/sparse_table\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/sparse_table.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include<ds\\/sparse_table\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/sparse_table.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include \"ds\\/sparse_table\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/sparse_table.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include\"ds\\/sparse_table\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/sparse_table.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
 
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include <ds\\/min_max_queue\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/min_max_queue.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include<ds\\/min_max_queue\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/min_max_queue.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include \"ds\\/min_max_queue\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/min_max_queue.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include\"ds\\/min_max_queue\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/min_max_queue.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include <ds\\/ufds\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/ufds.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include<ds\\/ufds\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/ufds.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include \"ds\\/ufds\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/ufds.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
-add_custom_command(TARGET cp_main POST_BUILD
-                   COMMAND ${SED_TOOL} -i -e '/\\\#include\"ds\\/ufds\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/ufds.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
+foreach(FILE_NAME in ${HEADERS})
+  string(REPLACE "algorithms/ds/" "" FILE_WITHOUT_PATH ${FILE_NAME})
+  string(REPLACE ".hpp" "" FILE_WITHOUT_PATH_OR_EXT ${FILE_WITHOUT_PATH})
 
 
+  add_custom_command(TARGET cp_main POST_BUILD
+                     COMMAND ${SED_TOOL} -i -e '/\\\#include <ds\\/${FILE_WITHOUT_PATH_OR_EXT}\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/${FILE_WITHOUT_PATH_OR_EXT}.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
+  add_custom_command(TARGET cp_main POST_BUILD
+                     COMMAND ${SED_TOOL} -i -e '/\\\#include<ds\\/${FILE_WITHOUT_PATH_OR_EXT}\\.hpp>/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/${FILE_WITHOUT_PATH_OR_EXT}.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
+  add_custom_command(TARGET cp_main POST_BUILD
+                     COMMAND ${SED_TOOL} -i -e '/\\\#include \"ds\\/${FILE_WITHOUT_PATH_OR_EXT}\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/${FILE_WITHOUT_PATH_OR_EXT}.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
+  add_custom_command(TARGET cp_main POST_BUILD
+                     COMMAND ${SED_TOOL} -i -e '/\\\#include\"ds\\/${FILE_WITHOUT_PATH_OR_EXT}\\.hpp\"/{r ${CMAKE_SOURCE_DIR}/algorithms/ds/${FILE_WITHOUT_PATH_OR_EXT}.hpp' -e 'd}' ${CMAKE_SOURCE_DIR}/MainFull.cpp)
+endforeach()
