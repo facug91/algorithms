@@ -1,5 +1,4 @@
 
-
 /**
  * Fenwick Tree (Binary Indexed Tree).
  * Ref: Competitive Programming 3, section 2.4.4
@@ -22,13 +21,13 @@ private:
 public:
 
 	void init(int size) {
-		n = size;
+		n = size + 1;
 		std::fill(bit, bit + n, 0);
 	}
 
 	void init(int size, ValueType* arr) {
 		init(size);
-		for (size_t i = 0; i < n; i++)
+		for (size_t i = 0; i < size; i++)
 			add(i, arr[i]);
 	}
 
@@ -73,7 +72,7 @@ private:
 public:
 
 	void init(int size) {
-		n = size;
+		n = size + 1;
 		std::fill(bit, bit + n, 0);
 	}
 
@@ -99,30 +98,28 @@ public:
 template<typename ValueType, int MaxSize>
 class FenwickTreeRangeUpdateRangeQuery {
 private:
-	int n;
 	FenwickTreePointUpdateRangeQuery<ValueType, MaxSize> B1, B2;
 
 public:
 
 	void init(int size) {
-		n = size;
-		B1.init(n);
-		B2.init(n);
+		B1.init(size);
+		B2.init(size);
 	}
 
 	void range_add(int l, int r, ValueType x) {
-		B1.add(l, r);
+		B1.add(l, x);
 		B1.add(r + 1, -x);
 		B2.add(l, x * (l - 1));
 		B2.add(r + 1, -x * r);
 	}
 
 	ValueType sum(int r) {
-		return B1.sum(r) * r - B2.sum(r);
+		return B1.sum(r) * r - B2.sum(r); // TODO : check if r is ok
 	}
 
 	ValueType range_sum(int l, int r) {
-		return sum(r) - sum(l-1);
+		return sum(r) - sum(l - 1);
 	}
 };
 
@@ -142,28 +139,29 @@ private:
 public:
 
 	void init(int rows, int cols) {
-		n = rows;
-		m = cols;
-		std::fill(bit, bit + n * m, 0);
+		n = rows + 1;
+		m = cols + 1;
+		for (int i = 0; i < n; i++)
+			std::fill(bit[i], bit[i] + m, 0);
 	}
 
 	void init(int rows, int cols, ValueType** mat) {
 		init(rows, cols);
-		for (size_t i = 0; i < n; i++)
-			for (size_t j = 0; j < m; j++)
+		for (size_t i = 0; i < rows; i++)
+			for (size_t j = 0; j < cols; j++)
 				add(i, mat[i][j]);
 	}
 
 	void init(std::vector<std::vector<ValueType>>& mat) {
 		init(mat.size(), mat[0].size());
-		for (size_t i = 0; i < n; i++)
-			for (size_t j = 0; j < m; j++)
+		for (size_t i = 0; i < mat.size(); i++)
+			for (size_t j = 0; j < mat[i].size(); j++)
 				add(i, mat[i][j]);
 	}
 
 	void add(int x, int y, ValueType delta) {
-		for (int i = x; i > 0; i -= i & -i)
-			for (int j = y; j > 0; j -= j & -j)
+		for (int i = x + 1; i > 0; i -= i & -i)
+			for (int j = y + 1; j > 0; j -= j & -j)
 				bit[i][j] += delta;
 	}
 
