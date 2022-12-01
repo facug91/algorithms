@@ -55,7 +55,7 @@ public:
 
 /**
  * \brief Defines a class for a Fenwick Tree (Binary Indexed Tree).
- *        State: untested.
+ *        State: tested.
  *
  * \tparam ValueType Type of the elements.
  * \tparam MaxSize Maximum number of elements.

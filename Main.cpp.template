@@ -10,13 +10,15 @@
 using namespace std;
 
 #ifdef DEBUG
-#define endline std::endl;
+#define endline std::endl
 #define LOG(x) std::cerr << "#" << (#x) << ": " << (x) << std::endl
 #else
 #define endline "\n"
 #define LOG(x)
 #endif
 
+#define y0 dbnw9uddu0132dnd03dnqwuidg1o
+#define y1 nd03dnqwuidg1odbnw9uddu0132d
 const double EPS = 1e-9;
 const double PI = 2.0 * acos(0.0);
 using ll = long long;
