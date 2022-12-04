@@ -49,3 +49,9 @@ public:
 		return ret;
 	}
 };
+
+template<typename ValueType, int MaxSize>
+using FenwickTreeMin = FenwickTreeMinMax<ValueType, MaxSize>;
+
+template<typename ValueType, int MaxSize>
+using FenwickTreeMax = FenwickTreeMinMax<ValueType, MaxSize, std::greater<ValueType>, std::numeric_limits<ValueType>::min()>;
