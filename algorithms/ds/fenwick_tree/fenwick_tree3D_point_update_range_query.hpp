@@ -8,10 +8,10 @@
  *
  * \tparam ValueType Type of the elements.
  * \tparam MaxDim1 Maximum size of the first dimension.
- * \tparam MaxDim2 Maximum size of the second dimension.
- * \tparam MaxDim3 Maximum size of the third dimension.
+ * \tparam MaxDim2 Maximum size of the second dimension (MaxDim1 by default).
+ * \tparam MaxDim3 Maximum size of the third dimension (MaxDim2 by default).
  */
-template<typename ValueType, int MaxDim1, int MaxDim2, int MaxDim3>
+template<typename ValueType, int MaxDim1, int MaxDim2 = MaxDim1, int MaxDim3 = MaxDim2>
 class FenwickTree3DPointUpdateRangeQuery {
 private:
 	int d1, d2, d3;

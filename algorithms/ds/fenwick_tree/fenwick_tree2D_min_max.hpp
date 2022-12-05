@@ -8,11 +8,11 @@
  *
  * \tparam ValueType Type of the elements.
  * \tparam MaxRows Maximum number of rows.
- * \tparam MaxCols Maximum number of columns.
+ * \tparam MaxCols Maximum number of columns (MaxRows by default).
  * \tparam ElementCompare Comparator function to use (std::less by default, for a range minimum query).
  * \tparam LimitValue Limit value, used for initialization (std::numeric_limits<ValueType>::max() by default).
  */
-template<typename ValueType, int MaxRows, int MaxCols, typename ElementCompare = std::less<ValueType>, ValueType LimitValue = std::numeric_limits<ValueType>::max()>
+template<typename ValueType, int MaxRows, int MaxCols = MaxRows, typename ElementCompare = std::less<ValueType>, ValueType LimitValue = std::numeric_limits<ValueType>::max()>
 class FenwickTree2DMinMax {
 private:
 	int n, m;
@@ -49,8 +49,8 @@ public:
 	}
 };
 
-template<typename ValueType, int MaxRows, int MaxCols>
+template<typename ValueType, int MaxRows, int MaxCols = MaxRows>
 using FenwickTree2DMin = FenwickTree2DMinMax<ValueType, MaxRows, MaxCols>;
 
-template<typename ValueType, int MaxRows, int MaxCols>
+template<typename ValueType, int MaxRows, int MaxCols = MaxRows>
 using FenwickTree2DMax = FenwickTree2DMinMax<ValueType, MaxRows, MaxCols, std::greater<ValueType>, std::numeric_limits<ValueType>::min()>;

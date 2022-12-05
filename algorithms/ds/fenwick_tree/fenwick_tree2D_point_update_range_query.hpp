@@ -8,9 +8,9 @@
  *
  * \tparam ValueType Type of the elements.
  * \tparam MaxRows Maximum number of rows.
- * \tparam MaxCols Maximum number of columns.
+ * \tparam MaxCols Maximum number of columns (MaxRows by default).
  */
-template<typename ValueType, int MaxRows, int MaxCols>
+template<typename ValueType, int MaxRows, int MaxCols = MaxRows>
 class FenwickTree2DPointUpdateRangeQuery {
 private:
 	int n, m;
