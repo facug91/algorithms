@@ -3,6 +3,7 @@
         From:
         Name:
         Date:
+        Solution:
 */
 
 #include <bits/stdc++.h>
@@ -24,9 +25,10 @@ const double PI = 2.0 * acos(0.0);
 using ll = long long;
 using ii = pair<int, int>;
 using vi = vector<int>;
+using vii = vector<ii>;
 
 const int MAX_N = 1e5 + 5;
-const int MAX_K = 16;
+const int MAX_Q = 1e5 + 5;
 const int MOD = 1e9 + 7;
 
 int main() {

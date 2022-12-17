@@ -25,11 +25,8 @@ public:
 			memset(bit[i], 0, sizeof(ValueType) * m);
 	}
 
-	void init(std::vector<std::vector<ValueType>>& mat) {
-		init(mat.size(), mat[0].size());
-		for (size_t i = 0; i < mat.size(); i++)
-			for (size_t j = 0; j < mat[i].size(); j++)
-				add(i, j, mat[i][j]);
+	void init(int size) {
+		init(size, size);
 	}
 
 	void add(int row, int col, ValueType delta) {
