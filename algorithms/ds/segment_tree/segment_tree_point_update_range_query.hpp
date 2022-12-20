@@ -134,3 +134,34 @@ template<typename ValueType> struct GcdDefaultValuePURQ { ValueType operator()()
 template<typename ValueType, int MaxSize>
 using SegmentTreePointUpdateRangeQueryGcd =
 		SegmentTreePointUpdateRangeQuery<ValueType, MaxSize, GcdCombinePURQ<ValueType>, GcdDefaultValuePURQ<ValueType>>;
+
+/** Segment tree with point update range query to get maximal subsegment sum in the given interval */
+template<typename ValueType>
+struct Data {
+	static const ValueType invalid = std::numeric_limits<ValueType>::min();
+	ValueType sum, prefix, suffix, ans;
+	Data() = default;
+	Data(ValueType sum, ValueType prefix, ValueType suffix, ValueType ans) : sum(sum), prefix(prefix), suffix(suffix), ans(ans) {}
+};
+template<typename ValueType>
+struct MaxSumDefaultValuePURQ {
+	Data<ValueType> operator()() {
+		return Data<ValueType>(Data<ValueType>::invalid, Data<ValueType>::invalid, Data<ValueType>::invalid, Data<ValueType>::invalid);
+	}
+};
+template<typename ValueType>
+struct MaxSumCombinePURQ {
+	Data<ValueType> operator()(const Data<ValueType>& l, const Data<ValueType>& r) {
+		if (l.ans == Data<ValueType>::invalid) return r;
+		if (r.ans == Data<ValueType>::invalid) return l;
+		Data<ValueType> res;
+		res.sum = l.sum + r.sum;
+		res.prefix = std::max(l.prefix, l.sum + r.prefix);
+		res.suffix = std::max(r.suffix, r.sum + l.suffix);
+		res.ans = std::max(std::max(l.ans, r.ans), l.suffix + r.prefix);
+		return res;
+	}
+};
+template<typename ValueType, int MaxSize>
+using SegmentTreePointUpdateRangeQueryMaxSum =
+		SegmentTreePointUpdateRangeQuery<ValueType, MaxSize, MaxSumCombinePURQ<ValueType>, MaxSumDefaultValuePURQ<ValueType>>;
