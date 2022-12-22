@@ -1,7 +1,7 @@
 
 /**
  * \brief Defines a class for a Segment Tree.
- *        State: untested.
+ *        State: tested.
  *        Ref: Competitive Programming 3, section 2.4.3
  *             https://cp-algorithms.com/data_structures/segment_tree.html
  *
@@ -13,7 +13,7 @@
  *         (e.g. struct SumDefaultValue { ValueType operator()() { return 0; }};).
  *         // TODO complete documentation of new parameters
  */
-template<typename ValueType, int MaxSize, typename CombineFunc, typename DefaultValueFunc
+template<typename ValueType, int MaxSize, typename CombineFunc, typename DefaultValueFunc>
 class SegmentTreeRangeUpdateRangeQuery {
 private:
 	int n;
@@ -38,15 +38,17 @@ private:
 		if (lazyUpdate[v] != -1) {
 			st[v * 2] = lazyUpdate[v] * (tm - tl + 1);
 			lazyUpdate[v * 2] = lazyUpdate[v];
+			lazyAdd[v * 2] = 0;
 			st[v * 2 + 1] = lazyUpdate[v] * (tr - tm);
 			lazyUpdate[v * 2 + 1] = lazyUpdate[v];
+			lazyAdd[v * 2 + 1] = 0;
 			lazyUpdate[v] = -1;
 		}
 		if (lazyAdd[v] != 0) {
-			st[v * 2] = (tm - tl + 1) - st[v * 2];
-			lazyAdd[v * 2] = (lazyAdd[v * 2] + lazyAdd[v]) % 2;
-			st[v * 2 + 1] = (tr - tm) - st[v * 2 + 1];
-			lazyAdd[v * 2 + 1] = (lazyAdd[v * 2 + 1] + lazyAdd[v]) % 2;
+			st[v * 2] += ((tm - tl + 1) * lazyAdd[v]);
+			lazyAdd[v * 2] += lazyAdd[v];
+			st[v * 2 + 1] += ((tr - tm) * lazyAdd[v]);
+			lazyAdd[v * 2 + 1] += lazyAdd[v];
 			lazyAdd[v] = 0;
 		}
 	}
@@ -79,8 +81,8 @@ private:
 	void add(int v, int tl, int tr, int l, int r, ValueType val) {
 		if (l > r) return;
 		if (l == tl && r == tr) {
-			st[v] = (tr - tl + 1) - st[v];
-			lazyAdd[v] = (lazyAdd[v] + val) % 2;
+			st[v] += ((tr - tl + 1) *val);
+			lazyAdd[v] += val;
 		} else {
 			push(v, tl, tr);
 
