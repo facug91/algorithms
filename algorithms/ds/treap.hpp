@@ -12,13 +12,15 @@
  * \tparam MaxSize Maximum number of elements.
  * // TODO update documentation
  */
-template<typename ValueType>
 class Treap {
-public:
+private:
+	using ValueType = long long;
+	using CounterType = long long;
+
 	struct item {
 		ValueType key;
 		int priority;
-		int cnt;
+		CounterType cnt;
 		item* l, * r;
 
 		item() = default;
@@ -30,26 +32,80 @@ public:
 
 	using pItem = item*;
 
+	pItem root;
+
 	int count(pItem t) {
 		return t ? t->cnt : 0;
 	}
 
 	void updateCounter(pItem t) {
-		if (t) t->cnt = 1 + cnt(t->l) + cnt(t->r);
+		if (t) t->cnt = 1 + count(t->l) + count(t->r);
 	}
 
 	void heapify(pItem t) {
 		if (!t) return;
 		pItem max = t;
-		if (t->l != nullptr && t->l->prior > max->prior)
+		if (t->l != nullptr && t->l->priority > max->priority)
 			max = t->l;
-		if (t->r != nullptr && t->r->prior > max->prior)
+		if (t->r != nullptr && t->r->priority > max->priority)
 			max = t->r;
 		if (max != t) {
-			swap(t->prior, max->prior);
+			std::swap(t->priority, max->priority);
 			heapify(max);
 		}
 	}
+
+	void split(pItem t, ValueType key, pItem& l, pItem& r) {
+		if (!t) l = r = nullptr;
+		else if (t->key <= key) split(t->r, key, t->r, r), l = t;
+		else split(t->l, key, l, t->l), r = t;
+		updateCounter(t);
+	}
+
+	void insert(pItem& t, pItem it) {
+		if (!t)
+			t = it;
+		else if (it->priority > t->priority)
+			split(t, it->key, it->l, it->r), t = it;
+		else
+			insert(t->key <= it->key ? t->r : t->l, it);
+		updateCounter(t);
+	}
+
+	void merge(pItem& t, pItem l, pItem r) {
+		if (!l || !r) t = l ? l : r;
+		else if (l->priority > r->priority) merge(l->r, l->r, r), t = l;
+		else merge(r->l, l, r->l), t = r;
+		updateCounter(t);
+	}
+
+	void erase(pItem& t, ValueType key) {
+		if (t->key == key) {
+			pItem th = t;
+			merge(t, t->l, t->r);
+			delete th;
+		} else
+			erase(key < t->key ? t->l : t->r, key);
+		updateCounter(t);
+	}
+
+	pItem unite(pItem l, pItem r) {
+		if (!l || !r) return l ? l : r;
+		if (l->priority < r->priority) std::swap(l, r);
+		pItem lt, rt;
+		split(r, l->key, lt, rt);
+		l->l = unite(l->l, lt);
+		l->r = unite(l->r, rt);
+		updateCounter(l);
+		return l;
+	}
+
+	CounterType countLessEqual (const pItem& t, ValueType keyId) {
+		if (!t) return 0;
+		if (t->key > keyId) return countLessEqual(t->l, keyId);
+		if (t->key <= keyId) countLessEqual(t->r, keyId) + count(t->l) + 1;
+	}
+public:
 
 	pItem build(int* a, int n) {
 		// Construct a treap on values {a[0], a[1], ..., a[n - 1]}
@@ -63,48 +119,15 @@ public:
 		return t;
 	}
 
-	void split(pItem t, ValueType key, pItem& l, pItem& r) {
-		if (!t) l = r = nullptr;
-		else if (t->key <= key) split(t->r, key, t->r, r), l = t;
-		else split(t->l, key, l, t->l), r = t;
-		updateCounter(t);
+	void insert(ValueType newVal) {
+		insert(root, new item(newVal));
 	}
 
-	void insert(pItem& t, pItem it) {
-		if (!t)
-			t = it;
-		else if (it->prior > t->prior)
-			split(t, it->key, it->l, it->r), t = it;
-		else
-			insert(t->key <= it->key ? t->r : t->l, it);
-		updateCounter(t);
+	void erase(ValueType val) {
+		erase(root, val);
 	}
 
-	void merge(pItem& t, pItem l, pItem r) {
-		if (!l || !r) t = l ? l : r;
-		else if (l->prior > r->prior) merge(l->r, l->r, r), t = l;
-		else merge(r->l, l, r->l), t = r;
-		updateCounter(t);
-	}
-
-	void erase(pItem& t, int key) {
-		if (t->key == key) {
-			pItem th = t;
-			merge(t, t->l, t->r);
-			delete th;
-		} else
-			erase(key < t->key ? t->l : t->r, key);
-		updateCounter(t);
-	}
-
-	pItem unite(pItem l, pItem r) {
-		if (!l || !r) return l ? l : r;
-		if (l->prior < r->prior) swap(l, r);
-		pItem lt, rt;
-		split(r, l->key, lt, rt);
-		l->l = unite(l->l, lt);
-		l->r = unite(l->r, rt);
-		updateCounter(l);
-		return l;
+	CounterType countLessEqual(ValueType keyId) {
+		return countLessEqual(root, keyId);
 	}
 };
