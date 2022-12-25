@@ -1,16 +1,8 @@
 
-#include <bits/stdc++.h>
-
 /**
- * \brief Defines a class for a Fenwick Tree (Binary Indexed Tree).
+ * \brief Defines a class for a Treap.
  *        State: tested.
- *        Ref: Competitive Programming 3, section 2.4.4
- *             https://cp-algorithms.com/data_structures/fenwick.html
- *             https://www.geeksforgeeks.org/binary-indexed-tree-range-update-range-queries/
- *
- * \tparam ValueType Type of the elements.
- * \tparam MaxSize Maximum number of elements.
- * // TODO update documentation
+ *        Ref: https://cp-algorithms.com/data_structures/treap.html
  */
 class Treap {
 private:
@@ -103,7 +95,7 @@ private:
 	CounterType countLessEqual (const pItem& t, ValueType keyId) {
 		if (!t) return 0;
 		if (t->key > keyId) return countLessEqual(t->l, keyId);
-		if (t->key <= keyId) countLessEqual(t->r, keyId) + count(t->l) + 1;
+		if (t->key <= keyId) return countLessEqual(t->r, keyId) + count(t->l) + 1;
 	}
 public:
 
