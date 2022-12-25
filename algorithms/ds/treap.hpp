@@ -25,9 +25,9 @@ private:
 
 		item() = default;
 
-		item(int key) : key(key), priority(rand()), l(nullptr), r(nullptr), cnt(0) {}
+		item(ValueType key) : key(key), priority(rand()), l(nullptr), r(nullptr), cnt(0) {}
 
-		item(int key, int prior) : key(key), priority(prior), l(nullptr), r(nullptr) {}
+		item(ValueType key, int prior) : key(key), priority(prior), l(nullptr), r(nullptr) {}
 	};
 
 	using pItem = item*;
@@ -107,7 +107,7 @@ private:
 	}
 public:
 
-	pItem build(int* a, int n) {
+	pItem build(ValueType* a, int n) {
 		// Construct a treap on values {a[0], a[1], ..., a[n - 1]}
 		if (n == 0) return nullptr;
 		int mid = n / 2;
