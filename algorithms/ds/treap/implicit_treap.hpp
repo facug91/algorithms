@@ -25,6 +25,7 @@ private:
 	using pItem = item*;
 
 	pItem root;
+	int treeSize{ 0 };
 
 	int size(pItem t) {
 		return t ? t->size : 0;
@@ -44,7 +45,7 @@ private:
 	}
 
 	void reset(pItem t) {
-		if (t)t->sum = t->val; //lazy already propagated
+		if (t)t->sum = t->val; // lazy already propagated
 	}
 
 	void combine(pItem& t, pItem l, pItem r) { //combine segment tree ranges
@@ -54,9 +55,9 @@ private:
 
 	void operation(pItem t) { //operation of segment tree
 		if (!t) return;
-		reset(t); //node represents single element of array
+		reset(t); // node represents single element of array
 		lazy(t->l);
-		lazy(t->r); //imp:propagate lazy before combining l,r
+		lazy(t->r); // imp: propagate lazy before combining l,r
 		combine(t, t->l, t);
 		combine(t, t, t->r);
 	}
@@ -100,7 +101,7 @@ private:
 	void updateRange(pItem t, int l, int r, ValueType val) { // [l,r]
 		pItem L, mid, R;
 		split(t, L, mid, l - 1);
-		split(mid, t, R, r - l);// note: r-l!!
+		split(mid, t, R, r - l); // note: r-l!!
 		t->lazy += val; // lazy update
 		merge(mid, L, t);
 		merge(t, mid, R);
@@ -114,7 +115,7 @@ private:
 		else /* if (currPos < pos) */ return at(t->r, pos, currPos + 1);
 	}
 
-	int findPos (pItem t, ValueType val, int add = 0) {
+	int findPos(pItem t, ValueType val, int add = 0) {
 		if (!t) return -1;
 		int currPos = add + size(t->l);
 		if (t->val == val) return currPos;
@@ -122,14 +123,31 @@ private:
 		else /* if (t->val < val) */ return findPos(t->r, val, currPos + 1);
 	}
 
+	int lowerBound(pItem t, ValueType val, int add = 0) {
+		if (!t) return treeSize;
+		int currPos = add + size(t->l);
+		if (t->val == val) return currPos;
+		if (t->val > val) return std::min(currPos, lowerBound(t->l, val, add));
+		else /* if (t->val < val) */ return lowerBound(t->r, val, currPos + 1);
+	}
+
 public:
 
 	void insert(ValueType val, int pos) {
+		assert(pos >= 0 && pos <= treeSize);
 		auto newItem = init(val);
-		pItem l, r;
-		split(root, l, r, pos);
-		merge(root, l, newItem);
-		merge(root, root, r);
+		if (!root) root = newItem;
+		else {
+			pItem l, r;
+			split(root, l, r, pos-1);
+			merge(l, l, newItem);
+			merge(root, l, r);
+		}
+		treeSize++;
+	}
+
+	void pushBack(ValueType val) {
+		insert(val, treeSize);
 	}
 
 	ValueType at(int pos) {
@@ -137,23 +155,28 @@ public:
 	}
 
 	void erase(int pos) {
-		pItem l, m, r, r2;
-		if (pos == 0) {
-			split(root, l, r, pos);
-			root = r;
-		} else {
-			split(root, l, r, pos - 1);
-			split(r, m, r2, pos);
-			merge(root, l, r2);
-		}
+		assert(pos >= 0 && pos < treeSize);
+		pItem l, m, r;
+		split(root, l, r, pos - 1);
+		split(r, m, r, 0);
+		merge(root, l, r);
+		treeSize--;
 	}
 
 	/*
 	 * Only works if the array was sorted.
 	 * If not found, return -1;
 	 */
-	int findPos (ValueType val) {
+	int findPos(ValueType val) {
 		return findPos(root, val);
+	}
+
+	/*
+	 * Only works if the array was sorted.
+	 * If not found, return treeSize;
+	 */
+	int lowerBound(ValueType val) {
+		return lowerBound(root, val);
 	}
 
 	ValueType rangeQuery(int l, int r) {
@@ -162,6 +185,10 @@ public:
 
 	void updateRange(int l, int r, ValueType val) {
 		updateRange(root, l, r, val);
+	}
+
+	int size() {
+		return treeSize;
 	}
 
 };
