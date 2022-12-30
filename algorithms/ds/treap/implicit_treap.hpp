@@ -117,6 +117,7 @@ private:
 
 	int findPos(pItem t, ValueType val, int add = 0) {
 		if (!t) return -1;
+		lazy(t);
 		int currPos = add + size(t->l);
 		if (t->val == val) return currPos;
 		if (t->val > val) return findPos(t->l, val, add);
@@ -125,9 +126,9 @@ private:
 
 	int lowerBound(pItem t, ValueType val, int add = 0) {
 		if (!t) return treeSize;
+		lazy(t);
 		int currPos = add + size(t->l);
-		if (t->val == val) return currPos;
-		if (t->val > val) return std::min(currPos, lowerBound(t->l, val, add));
+		if (t->val >= val) return std::min(currPos, lowerBound(t->l, val, add));
 		else /* if (t->val < val) */ return lowerBound(t->r, val, currPos + 1);
 	}
 
