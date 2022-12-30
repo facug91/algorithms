@@ -11,15 +11,16 @@ private:
 
 	struct item {
 		ValueType val, sum, lazy;
+		bool rev;
 		int priority;
 		int size;
 		item* l, * r;
 
 		item() = default;
 
-		item(ValueType val) : val(val), sum(val), lazy(0), priority(rand()), size(1), l(nullptr), r(nullptr) {}
+		item(ValueType val) : val(val), sum(val), lazy(0), rev(false), priority(rand()), size(1), l(nullptr), r(nullptr) {}
 
-		item(ValueType val, int prior) : val(val), sum(val), lazy(0), priority(prior), size(1), l(nullptr), r(nullptr) {}
+		item(ValueType val, int prior) : val(val), sum(val), lazy(0), rev(false), priority(prior), size(1), l(nullptr), r(nullptr) {}
 	};
 
 	using pItem = item*;
@@ -36,12 +37,14 @@ private:
 	}
 
 	void lazy(pItem t) {
-		if (!t || !t->lazy) return;
+		if (!t) return;
 		t->val += t->lazy; //operation of lazy
 		t->sum += t->lazy * size(t);
-		if (t->l)t->l->lazy += t->lazy; //propagate lazy
-		if (t->r)t->r->lazy += t->lazy;
+		if (t->rev) std::swap(t->l, t->r);
+		if (t->l) t->l->lazy += t->lazy, t->l->rev ^= t->rev; //propagate lazy
+		if (t->r) t->r->lazy += t->lazy, t->r->rev ^= t->rev;
 		t->lazy = 0;
+		t->rev = false;
 	}
 
 	void reset(pItem t) {
@@ -203,6 +206,17 @@ public:
 	void clear() {
 		clear(root);
 		treeSize = 0;
+	}
+
+	void reverse(int l, int r) {
+		pItem L, R, mid;
+
+		split(root, L, R, l - 1);
+		split(R, mid, R, r - l);
+
+		mid->rev ^= true;
+		merge(R, mid, R);
+		merge(root, L, R);
 	}
 
 };
