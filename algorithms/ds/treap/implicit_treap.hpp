@@ -5,9 +5,9 @@
  *        Ref: https://cp-algorithms.com/data_structures/treap.html
  *             https://tanujkhattar.wordpress.com/2016/01/10/treaps-one-tree-to-rule-em-all-part-2/
  */
+ template <typename ValueType>
 class ImplicitTreap {
 private:
-	using ValueType = long long;
 
 	struct item {
 		ValueType val, sum, lazy;
@@ -143,6 +143,15 @@ private:
 		t = nullptr;
 	}
 
+	void toArray(pItem t, ValueType* arr, int add = 0) {
+		if (!t) return;
+		lazy(t);
+		int currPos = add + size(t->l);
+		arr[currPos] = t->val;
+		toArray(t->l, arr, add);
+		toArray(t->r, arr, currPos + 1);
+	}
+
 public:
 
 	void insert(ValueType val, int pos) {
@@ -219,4 +228,7 @@ public:
 		merge(root, L, R);
 	}
 
+	void toArray(ValueType* arr) {
+		toArray(root, arr);
+	}
 };
