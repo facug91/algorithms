@@ -131,6 +131,14 @@ private:
 		else /* if (t->val < val) */ return lowerBound(t->r, val, currPos + 1);
 	}
 
+	void clear(pItem& t) {
+		if (!t) return;
+		clear(t->l);
+		clear(t->r);
+		delete t;
+		t = nullptr;
+	}
+
 public:
 
 	void insert(ValueType val, int pos) {
@@ -189,6 +197,11 @@ public:
 
 	int size() {
 		return treeSize;
+	}
+
+	void clear() {
+		clear(root);
+		treeSize = 0;
 	}
 
 };
