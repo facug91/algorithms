@@ -228,6 +228,21 @@ public:
 		merge(root, L, R);
 	}
 
+	void cyclic_shift(int l, int r, int k) {   /// function for cyclic shifting of the subarray [qL; qR] with "k" positions. Untested
+		if(l == r) return;
+		k %= (r - l + 1);
+
+		pItem L, R, mid, fh, sh;
+		split(root, L, R, l - 1);
+		split(R, mid, R, r - l);
+
+		split(mid, fh, sh, (r - l + 1) - k - 1);
+		merge(mid, sh, fh);
+
+		merge(R, mid, R);
+		merge(root, L, R);
+	}
+
 	void toArray(ValueType* arr) {
 		toArray(root, arr);
 	}
