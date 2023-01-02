@@ -21,6 +21,7 @@ set(HEADERS
     algorithms/ds/segment_tree/merge_sort_segment_tree_point_update_range_query.hpp
     algorithms/ds/treap/treap.hpp
     algorithms/ds/treap/implicit_treap.hpp
+    algorithms/ds/sqrt_tree.hpp
     )
 
 add_executable(cp_main Main.cpp ${HEADERS})
