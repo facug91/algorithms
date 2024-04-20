@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+
+using namespace std;
 
 /**
  * \brief Defines a class for a Fenwick Tree (Binary Indexed Tree).
@@ -7,43 +10,43 @@
  *             https://www.geeksforgeeks.org/binary-indexed-tree-range-update-range-queries/
  *
  * \tparam ValueType Type of the elements.
- * \tparam MaxSize Maximum number of elements.
  */
-template<typename ValueType, int MaxSize>
+template<typename ValueType>
 class FenwickTreePointUpdateRangeQuery {
 private:
-	int n;
-	ValueType bit[MaxSize + 1];
+	int n{};
+	vector<ValueType> bit;
+
+	int log2_floor(ValueType i) {
+		return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1;
+	}
 
 public:
 
 	void init(int size) {
 		n = size + 1;
-		memset(bit, 0, sizeof(ValueType) * n);
+		bit.assign(n, 0);
 	}
 
 	void init(int size, ValueType val) {
-		init(size);
+		n = size + 1;
+		bit.assign(n, val);
 		bit[0] = 0;
-		std::fill(bit + 1, bit + size + 1, val);
-		for (size_t i = 0; i < size; i++) {
+		for (size_t i = 0; i < n; i++) {
 			size_t j = i + (i & -i);
 			if (j <= n) bit[j] += bit[i];
 		}
 	}
 
-	void init(int size, ValueType* arr) {
-		init(size);
+	void init(const std::vector<ValueType>& arr) {
+		n = arr.size() + 1;
+		bit.resize(n);
 		bit[0] = 0;
-		std::copy(arr, arr + size, bit + 1);
-		for (size_t i = 0; i < size; i++) {
+		std::copy(arr.begin(), arr.end(), std::next(bit.begin()));
+		for (size_t i = 0; i < n; i++) {
 			size_t j = i + (i & -i);
 			if (j <= n) bit[j] += bit[i];
 		}
-	}
-
-	void init(std::vector<ValueType>& arr) {
-		init(arr.size(), &arr[0]);
 	}
 
 	void add(int idx, ValueType delta) {
@@ -61,4 +64,53 @@ public:
 	ValueType sum(int l, int r) {
 		return sum(r) - sum(l - 1);
 	}
+
+	ValueType searchPos(ValueType v) {
+		ValueType sum = 0;
+		int pos = 0;
+		for (int i = log2_floor(n); i >= 0; i--) {
+			if (pos + (1 << i) < n and sum + bit[pos + (1 << i)] < v) {
+				sum += bit[pos + (1 << i)];
+				pos += (1 << i);
+			}
+		}
+		return pos;
+	}
 };
+
+int main() {
+	int n = 5;
+	FenwickTreePointUpdateRangeQuery<int> bit;
+
+	// print all zeros
+	bit.init(n);
+	for (int i = 0; i < n; i++)
+		cout << bit.sum(i) << " ";
+	cout << endl;
+
+	// print 1 to n
+	bit.init(5, 1);
+	for (int i = 0; i < n; i++)
+		cout << bit.sum(i) << " ";
+	cout << endl;
+
+	// print 1 to n*(n+1)/2
+	vector<int> v = { 1, 2, 3, 4, 5 };
+	bit.init(v);
+	for (int i = 0; i < n; i++)
+		cout << bit.sum(i) << " ";
+	cout << endl;
+
+	// print 1 to n*(n+1)/2
+	bit.init(5);
+	for (int i = 0; i < n; i++) {
+		bit.add(i, i + 1);
+		cout << bit.sum(i) << " ";
+	}
+	cout << endl;
+
+	// print 0 to n-1
+	for (int i = 1; i <= n; i++)
+		cout << bit.searchPos(i) << " ";
+	cout << endl;
+}
