@@ -12,14 +12,38 @@ void floyd_warshall(vector<vector<WeightType>>& graph) {
 				graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
 }
 
+
+/**
+ * Let \p path be a 2D parent matrix, where path[i][j] is the last vertex before j
+ * on a shortest path from i to j, i.e. i -> ... -> p[i][j] -> j
+ */
 template<typename WeightType = int>
-void print(vector<vector<WeightType>>& graph, int padding = 5) {
+void floyd_warshall_with_path(vector<vector<WeightType>>& graph, vector<vector<int>>& paths) {
 	int n = graph.size();
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) cout << right << setw(padding) << graph[i][j];
-		cout << endl;
-	}
-	cout << endl;
+	paths.assign(n, vector<int>(n, 0));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			paths[i][j] = i;
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				if (graph[i][j] > graph[i][k] + graph[k][j]) {
+					graph[i][j] = graph[i][k] + graph[k][j];
+					paths[i][j] = paths[k][j];
+				}
+}
+void buildPath(const vector<vector<int>>& paths, vector<int>& path, int i, int j) {
+	if (i != j) buildPath(paths, path, i, paths[i][j]);
+	path.push_back(j);
+}
+
+/** Transitive Closure */
+template<> void floyd_warshall(vector<vector<bool>>& graph) {
+	int n = graph.size();
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				graph[i][j] = graph[i][j] | (graph[i][k] & graph[k][j]);
 }
 
 int main() {
@@ -34,5 +58,8 @@ int main() {
 	graph[4][5] = 2, graph[5][3] = 3, graph[5][1] = 1, graph[5][4] = 2;
 
 	floyd_warshall<int>(graph);
-	print(graph);
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			cout << "Minimum distance from "<<i<<" to " << j << ": " << graph[i][j] << endl;
 }
